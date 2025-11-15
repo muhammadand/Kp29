@@ -46,6 +46,7 @@ class ProductController extends Controller
             'gambar'      => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'variants.*.ukuran' => 'required|string|max:100',
             'variants.*.harga'  => 'required|numeric|min:0',
+            'variants.*.harga_m3'  => 'required|numeric|min:0',
             'variants.*.stok'   => 'required|integer|min:0',
         ]);
 
@@ -94,6 +95,7 @@ class ProductController extends Controller
             'gambar' => 'image|mimes:png,jpg,jpeg|max:2048',
             'variants.*.ukuran' => 'required',
             'variants.*.harga' => 'required|numeric',
+            'variants.*.harga_m3' => 'required|numeric',
             'variants.*.stok' => 'required|numeric'
         ]);
 

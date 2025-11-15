@@ -6,11 +6,41 @@
 <div class="container py-4">
     <h2 class="mb-4 text-center">Katalog Produk Kayu</h2>
 
-    <!-- Form Pencarian -->
+    <!-- Form Pencarian & Filter -->
     <form method="GET" action="{{ route('shop.index') }}" class="mb-4">
-        <div class="input-group">
-            <input type="text" name="search" class="form-control" placeholder="Cari produk..." value="{{ request('search') }}">
-            <button class="btn btn-success" type="submit">Cari</button>
+
+        <div class="row g-2">
+
+            <!-- Input Search -->
+            <div class="col-md-6">
+                <input 
+                    type="text" 
+                    name="search" 
+                    class="form-control" 
+                    placeholder="Cari produk..." 
+                    value="{{ request('search') }}"
+                >
+            </div>
+
+            <!-- Dropdown Jenis Kayu -->
+            <div class="col-md-4">
+                <select name="jenis_kayu" class="form-select">
+                    <option value="">Semua Jenis Kayu</option>
+
+                    @foreach($jenisKayuList as $jenis)
+                        <option value="{{ $jenis }}"
+                            {{ request('jenis_kayu') == $jenis ? 'selected' : '' }}>
+                            {{ $jenis }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <!-- Tombol -->
+            <div class="col-md-2">
+                <button class="btn btn-success w-100" type="submit">Filter</button>
+            </div>
+
         </div>
     </form>
 
@@ -18,6 +48,7 @@
         @forelse($products as $product)
             <div class="col-md-3 mb-4">
                 <div class="card h-100 shadow-sm border-success">
+
                     @if($product->gambar)
                         <img src="{{ asset('uploads/products/'.$product->gambar) }}" class="card-img-top" height="200">
                     @else
@@ -26,7 +57,11 @@
 
                     <div class="card-body bg-white">
                         <h5 class="card-title">{{ $product->nama_produk }}</h5>
-                        <p class="text-muted">{{ $product->jenis_kayu }}</p>
+
+                        <!-- Jenis Kayu -->
+                        <span class="badge bg-warning text-dark">
+                            {{ $product->jenis_kayu }}
+                        </span>
                     </div>
 
                     <div class="card-footer text-center bg-white">
@@ -34,6 +69,7 @@
                             Lihat Detail
                         </a>
                     </div>
+
                 </div>
             </div>
         @empty
@@ -57,9 +93,6 @@
     }
     .card.border-success {
         border-width: 2px;
-    }
-    .card-body, .card-footer {
-        background-color: #fff;
     }
 </style>
 @endsection

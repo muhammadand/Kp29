@@ -17,12 +17,12 @@ class CartController extends Controller
         $cart = session()->get('cart', []);
 
         $order = null;
-        if(Auth::check()) {
+        if (Auth::check()) {
             // Ambil order terakhir milik user yang statusnya pending
             $order = Order::where('user_id', Auth::id())
-                          ->where('status', 'pending')
-                          ->latest()
-                          ->first();
+                ->where('status', 'pending')
+                ->latest()
+                ->first();
         }
 
         return view('cart.index', compact('cart', 'order'));
@@ -49,7 +49,12 @@ class CartController extends Controller
 
         session()->put('cart', $cart);
 
-        return redirect()->back()->with('success', 'Produk berhasil ditambahkan ke keranjang!');
+        return redirect()->back()->with([
+            'success' => 'Produk berhasil ditambahkan ke keranjang!',
+            'product_name' => $variant->product->nama_produk,
+            'variant_size' => $variant->ukuran,
+            'variant_price' => number_format($variant->harga, 0, ',', '.'),
+        ]);
     }
 
     // Update qty

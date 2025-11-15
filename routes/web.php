@@ -10,6 +10,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\ReviewController;
 
 // =================== AUTH PELANGGAN ===================
 Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
@@ -94,6 +95,9 @@ Route::middleware('auth:web')->group(function () {
     Route::post('/checkout/{order}/upload-payment', [CheckoutController::class, 'uploadPayment'])
     ->name('checkout.uploadPayment.post');
     Route::get('/my-order', [OrderController::class, 'myOrder'])->name('orders.my');
+    //REVIEW
+    Route::post('/review/{order}', [ReviewController::class, 'store'])->name('review.store');
+
  
 });
 

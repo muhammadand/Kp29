@@ -2,19 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProductVariant extends Model
+class ProductReview extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'product_id',
-        'ukuran',
-        'harga',
-        'harga_m3',
-        'stok',
+        'name',
+        'rating',
+        'content',
     ];
 
     public function product()

@@ -13,8 +13,8 @@ class DatabaseSeeder extends Seeder
     {
         // Panggil seeder admin di sini
         $this->call([
-            // AdminSeeder::class,
-            // UserSeeder::class,
+            AdminSeeder::class,
+            UserSeeder::class,
             ProductSeeder::class
         ]);
     }

@@ -83,7 +83,7 @@
                             <td class="text-center">
                                 @if ($order->payment_status == 'pending')
                                     <span class="badge bg-warning px-3 py-2 text-white">Pending</span>
-                                @elseif ($order->payment_status == 'uploaded')
+                                @elseif ($order->payment_status == 'paid')
                                     <span class="badge bg-success px-3 py-2 text-white">Dibayar</span>
                                 @elseif ($order->payment_status == 'ditolak')
                                     <span class="badge bg-danger px-3 py-2">Ditolak</span>
