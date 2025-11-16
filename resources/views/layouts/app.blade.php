@@ -49,9 +49,9 @@
                     {{-- <li class="nav-item">
                         <a class="nav-link {{ Request::is('services') ? 'active' : '' }}" href="{{ url('/services') }}">Services</a>
                     </li> --}}
-                    {{-- <li class="nav-item">
-                        <a class="nav-link {{ Request::is('blog') ? 'active' : '' }}" href="{{ url('/blog') }}">Blog</a>
-                    </li> --}}
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('services') ? 'active' : '' }}" href="{{ url('/services') }}">Service</a>
+                    </li>
                       <li class="nav-item">
                         <a class="nav-link {{ Request::is('my-order') ? 'active' : '' }}" href="{{ url('/my-order') }}">My order</a>
                     </li>

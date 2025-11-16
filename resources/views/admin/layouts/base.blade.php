@@ -17,6 +17,8 @@
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 
     <!-- Custom styles for this template-->
     <link href="{{ asset('/assets/css/sb-admin-2.min.css') }}" rel="stylesheet">
@@ -53,6 +55,25 @@
 
             <!-- Divider -->
             <hr class="sidebar-divider">
+             <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.service-categories.index') }}">
+                    <i class="fas fa-fw fa-box"></i>
+                    <span>kategori service</span>
+                </a>
+            </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.service-items.index') }}">
+                    <i class="fas fa-fw fa-box"></i>
+                    <span>service</span>
+                </a>
+            </li>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.laporan.transaksi') }}">
+                    <i class="fas fa-fw fa-box"></i>
+                    <span>Laporan</span>
+                </a>
+            </li>
 
 
 
@@ -74,10 +95,9 @@
                 <div id="collapseOrders" class="collapse" aria-labelledby="headingOrders"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ route('admin.orders.index') }}">Semua Pesanan</a>
-                        {{-- <a class="collapse-item" href="{{ route('admin.orders.processing') }}">Pesanan Diproses</a>
-            <a class="collapse-item" href="{{ route('admin.orders.completed') }}">Pesanan Selesai</a>
-            <a class="collapse-item" href="{{ route('admin.orders.cancelled') }}">Pesanan Batal</a> --}}
+                        <a class="collapse-item" href="{{ route('admin.orders.index') }}">Pesanan kayu</a>
+                        <a class="collapse-item" href="{{ route('admin.service-orders.index') }}">Pesanan jasa</a>
+
                     </div>
                 </div>
             </li>

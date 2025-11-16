@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
+use App\Models\ServiceOrder;
 use App\Models\OrderItem;
 use App\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
@@ -129,18 +130,21 @@ class OrderController extends Controller
     }
 
     public function myOrder()
-{
-    $user = Auth::user(); // ambil user yang sedang login
+    {
+        $user = Auth::user(); // ambil user login
 
-    $orders = Order::with(['Items.variant']) // load relasi item & variant
-        ->where('user_id', $user->id)
-        ->orderBy('created_at', 'desc')
-        ->get();
+        // Order produk biasa
+        $orders = Order::with(['items.variant'])
+            ->where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-    return view('orders.my_order', compact('orders'));
-}
+        // Order layanan / service
+        $serviceOrders = ServiceOrder::with('item')
+            ->where('user_id', $user->id) // pastikan kolom customer_id ada
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-
-
-
+        return view('orders.my_order', compact('orders', 'serviceOrders'));
+    }
 }

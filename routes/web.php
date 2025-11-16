@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ServiceOrderController;
 
 // =================== AUTH PELANGGAN ===================
 Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
@@ -21,22 +22,20 @@ Route::post('/register', [LoginController::class, 'registerProcess'])->name('reg
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
+ 
 // =================== AUTH ADMIN ===================
 Route::prefix('admin')->name('admin.')->group(function () {
     // Login admin
     Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AdminAuthController::class, 'loginProcess'])->name('login.process');
-
-    Route::middleware('auth:admin')->group(function () {
-        // Dashboard admin
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-        // Produk (CRUD)
-        Route::resource('products', ProductController::class);
-
-        // Pesanan
-        Route::prefix('orders')->name('orders.')->group(function () {
+  Route::resource('products', ProductController::class);
+    Route::get('/service-orders', [ServiceOrderController::class, 'index'])
+        ->name('service-orders.index');
+    Route::get('/service-orders/{id}', [ServiceOrderController::class, 'show'])
+        ->name('service-orders.show');
+           Route::put('/service-orders/{id}/status', [ServiceOrderController::class, 'updateOrderStatus'])
+        ->name('service-orders.updateOrderStatus');
+          Route::prefix('orders')->name('orders.')->group(function () {
             Route::get('/', [OrderAdminController::class, 'index'])->name('index');
             Route::get('/processing', [OrderAdminController::class, 'processing'])->name('processing');
             Route::get('/completed', [OrderAdminController::class, 'completed'])->name('completed');
@@ -46,15 +45,29 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/{id}/status', [OrderAdminController::class, 'updateStatus'])->name('updateStatus');
             Route::post('/{id}/mark-paid', [OrderAdminController::class, 'markPaid'])->name('markPaid');
             Route::post('/{id}/approve-payment', [OrderAdminController::class, 'approvePayment'])->name('approvePayment');
-             Route::post('/{order}/reject-payment', 
-            [OrderAdminController::class, 'rejectPayment']
-        )->name('rejectPayment');
+            Route::post(
+                '/{order}/reject-payment',
+                [OrderAdminController::class, 'rejectPayment']
+            )->name('rejectPayment');
         });
-         Route::get('/laporan/transaksi', [DashboardController::class, 'report'])
-        ->name('laporan.transaksi');
+    Route::middleware('auth:admin')->group(function () {
+        // Dashboard admin
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Produk (CRUD)
+     
+
+        // Pesanan
+      
+        Route::get('/laporan/transaksi', [DashboardController::class, 'report'])
+            ->name('laporan.transaksi');
         // Logout admin
         Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
     });
+
+    //service
+    Route::resource('service-categories', \App\Http\Controllers\ServiceCategoryController::class);
+    Route::resource('service-items', \App\Http\Controllers\ServiceItemController::class);
 });
 
 // ===================== HALAMAN UMUM =====================
@@ -93,11 +106,20 @@ Route::middleware('auth:web')->group(function () {
     //     ->name('checkout.uploadPayment.post');
 
     Route::post('/checkout/{order}/upload-payment', [CheckoutController::class, 'uploadPayment'])
-    ->name('checkout.uploadPayment.post');
+        ->name('checkout.uploadPayment.post');
     Route::get('/my-order', [OrderController::class, 'myOrder'])->name('orders.my');
     //REVIEW
     Route::post('/review/{order}', [ReviewController::class, 'store'])->name('review.store');
-
- 
+    //Buys Service
+    // Services
+    Route::get('/services', [ShopController::class, 'services'])->name('shop.services');
+    Route::get('/services/{id}', [ShopController::class, 'serviceShow'])->name('shop.services.show');
+    Route::post('/services/buy', [ShopController::class, 'buyService'])->name('shop.services.buy');
+    Route::post('/services/order/store', [ServiceOrderController::class, 'store'])->name('shop.services.order.store');
+    // Route::post('/services/order/upload', [ServiceOrderController::class, 'uploadPayment'])
+    // ->name('shop.services.order.upload');
+    Route::get('/services/order/upload/{id}', [ServiceOrderController::class, 'uploadPage'])
+    ->name('shop.services.order.upload');
+    Route::post('/services/order/upload/{id}', [ServiceOrderController::class, 'uploadPayment'])
+    ->name('shop.services.order.send');
 });
-
