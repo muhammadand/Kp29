@@ -55,20 +55,20 @@
 
             <!-- Divider -->
             <hr class="sidebar-divider">
-             <li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.service-categories.index') }}">
                     <i class="fas fa-fw fa-box"></i>
                     <span>kategori service</span>
                 </a>
             </li>
-              <li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.service-items.index') }}">
                     <i class="fas fa-fw fa-box"></i>
                     <span>service</span>
                 </a>
             </li>
-              </li>
-              <li class="nav-item">
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.laporan.transaksi') }}">
                     <i class="fas fa-fw fa-box"></i>
                     <span>Laporan</span>
@@ -95,12 +95,18 @@
                 <div id="collapseOrders" class="collapse" aria-labelledby="headingOrders"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ route('admin.orders.index') }}">Pesanan kayu</a>
+                        <a class="collapse-item" href="{{ route('admin.orders.index') }}">
+                            pesanan kayu
+                        </a>
+
                         <a class="collapse-item" href="{{ route('admin.service-orders.index') }}">Pesanan jasa</a>
 
                     </div>
                 </div>
             </li>
+
+
+
 
 
             <!-- Divider -->
@@ -154,8 +160,173 @@
                                 </form>
                             </div>
                         </li>
+                        <!-- Nav Item - Alerts -->
+                        <li class="nav-item dropdown no-arrow mx-1">
 
-                  
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell fa-fw"></i>
+
+                                <!-- Counter -->
+                                <span id="alertCount" class="badge badge-danger badge-counter d-none">0</span>
+                            </a>
+
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">Alerts Center</h6>
+
+                                <div id="alertList"></div>
+
+                                <a class="dropdown-item text-center small text-gray-500" href="#">
+                                    Show All Alerts
+                                </a>
+                            </div>
+
+                        </li>
+
+
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+
+                                $.ajax({
+                                    url: "/admin/check-new-orders",
+                                    type: "GET",
+                                    success: function(orderRes) {
+
+                                        $.ajax({
+                                            url: "/admin/check-new-service-orders",
+                                            type: "GET",
+                                            success: function(serviceRes) {
+
+                                                console.log("ORDER =", orderRes);
+                                                console.log("SERVICE =", serviceRes);
+
+                                                // Hitung total notifikasi
+                                                let totalCount = orderRes.count + serviceRes.count;
+
+                                                if (totalCount > 0) {
+                                                    $("#alertCount").removeClass("d-none").text(totalCount);
+                                                } else {
+                                                    $("#alertCount").addClass("d-none");
+                                                }
+
+                                                let html = "";
+
+                                                // ==============================
+                                                // 🔥 Render Notifikasi Order Barang
+                                                // ==============================
+                                                orderRes.orders.forEach(order => {
+
+                                                    let bgStyle = order.is_read == 0 ?
+                                                        "background:#e9ecef;" :
+                                                        "background:#ffeeba;";
+
+                                                    html += `
+                            <a onclick="markAsRead(${order.id}, 'order')" 
+                                class="dropdown-item d-flex align-items-center"
+                                style="${bgStyle} cursor:pointer;">
+
+                                <div class="mr-3">
+                                    <div class="icon-circle bg-primary">
+                                        <i class="fas fa-shopping-bag text-white"></i>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="small text-gray-500">${order.created_at}</div>
+                                    <span class="font-weight-bold">
+                                        Pesanan barang dari <b>${order.nama_pelanggan}</b>
+                                    </span>
+                                    <div>Produk: ${order.items[0].product.nama_produk}</div>
+                                </div>
+
+                            </a>
+                        `;
+                                                });
+
+                                                // ==============================
+                                                // 🔥 Render Notifikasi Order Service
+                                                // ==============================
+                                                serviceRes.orders.forEach(sv => {
+
+                                                    let bgStyle = sv.is_read == 0 ?
+                                                        "background:#e9ecef;" :
+                                                        "background:#d4edda;"; // hijau soft
+
+                                                    html += `
+                            <a onclick="markAsRead(${sv.id}, 'service')" 
+                                class="dropdown-item d-flex align-items-center"
+                                style="${bgStyle} cursor:pointer;">
+
+                                <div class="mr-3">
+                                    <div class="icon-circle bg-success">
+                                        <i class="fas fa-tools text-white"></i>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="small text-gray-500">${sv.created_at}</div>
+                                    <span class="font-weight-bold">
+                                        Order service dari <b>${sv.customer_name}</b>
+                                    </span>
+                                    <div>Layanan: ${sv.item.name}</div>
+                                </div>
+
+                            </a>
+                        `;
+                                                });
+
+                                                $("#alertList").html(html);
+
+                                            },
+                                            error: function(err) {
+                                                console.log("SERVICE AJAX ERROR:", err);
+                                            }
+                                        });
+
+                                    },
+                                    error: function(err) {
+                                        console.log("ORDER AJAX ERROR:", err);
+                                    }
+                                });
+
+                            });
+
+
+                            // =====================================================
+                            // 🔥 Tandai sebagai dibaca + Redirect
+                            // =====================================================
+                            function markAsRead(id, type) {
+
+                                let url = type === "order" ?
+                                    `/admin/orders/mark-read/${id}` :
+                                    `/admin/service-orders/mark-read/${id}`;
+
+                                let redirectUrl = type === "order" ?
+                                    `/admin/orders/${id}` :
+                                    `/admin/service-orders/${id}`;
+
+                                $.ajax({
+                                    url: url,
+                                    type: "POST",
+                                    data: {
+                                        _token: "{{ csrf_token() }}"
+                                    },
+                                    success: function() {
+                                        window.location.href = redirectUrl;
+                                    }
+                                });
+                            }
+                        </script>
+
+
+
+
+
+
+
+
+
 
                         <div class="topbar-divider d-none d-sm-block"></div>
 
@@ -245,7 +416,7 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('/assets/js/sb-admin-2.min.js') }}"></script>
-
+    <script src="{{ asset('admin/vendor/jquery/jquery.min.js') }}"></script>
 </body>
 
 </html>

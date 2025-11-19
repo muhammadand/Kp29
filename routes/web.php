@@ -12,6 +12,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ServiceOrderController;
+use App\Models\Order;
 
 // =================== AUTH PELANGGAN ===================
 Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
@@ -22,45 +23,48 @@ Route::post('/register', [LoginController::class, 'registerProcess'])->name('reg
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
- 
+
 // =================== AUTH ADMIN ===================
 Route::prefix('admin')->name('admin.')->group(function () {
     // Login admin
     Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AdminAuthController::class, 'loginProcess'])->name('login.process');
-  Route::resource('products', ProductController::class);
+    Route::resource('products', ProductController::class);
     Route::get('/service-orders', [ServiceOrderController::class, 'index'])
         ->name('service-orders.index');
     Route::get('/service-orders/{id}', [ServiceOrderController::class, 'show'])
         ->name('service-orders.show');
-           Route::put('/service-orders/{id}/status', [ServiceOrderController::class, 'updateOrderStatus'])
+    Route::put('/service-orders/{id}/status', [ServiceOrderController::class, 'updateOrderStatus'])
         ->name('service-orders.updateOrderStatus');
-          Route::prefix('orders')->name('orders.')->group(function () {
-            Route::get('/', [OrderAdminController::class, 'index'])->name('index');
-            Route::get('/processing', [OrderAdminController::class, 'processing'])->name('processing');
-            Route::get('/completed', [OrderAdminController::class, 'completed'])->name('completed');
-            Route::get('/cancelled', [OrderAdminController::class, 'cancelled'])->name('cancelled');
-            Route::get('/{id}', [OrderAdminController::class, 'show'])->name('show');
+    Route::prefix('orders')->name('orders.')->group(function () {
+        Route::get('/', [OrderAdminController::class, 'index'])->name('index');
+        Route::get('/processing', [OrderAdminController::class, 'processing'])->name('processing');
+        Route::get('/completed', [OrderAdminController::class, 'completed'])->name('completed');
+        Route::get('/cancelled', [OrderAdminController::class, 'cancelled'])->name('cancelled');
+        Route::get('/{id}', [OrderAdminController::class, 'show'])->name('show');
 
-            Route::post('/{id}/status', [OrderAdminController::class, 'updateStatus'])->name('updateStatus');
-            Route::post('/{id}/mark-paid', [OrderAdminController::class, 'markPaid'])->name('markPaid');
-            Route::post('/{id}/approve-payment', [OrderAdminController::class, 'approvePayment'])->name('approvePayment');
-            Route::post(
-                '/{order}/reject-payment',
-                [OrderAdminController::class, 'rejectPayment']
-            )->name('rejectPayment');
-        });
+        Route::post('/{id}/status', [OrderAdminController::class, 'updateStatus'])->name('updateStatus');
+        Route::post('/{id}/mark-paid', [OrderAdminController::class, 'markPaid'])->name('markPaid');
+        Route::post('/{id}/approve-payment', [OrderAdminController::class, 'approvePayment'])->name('approvePayment');
+        Route::post(
+            '/{order}/reject-payment',
+            [OrderAdminController::class, 'rejectPayment']
+        )->name('rejectPayment');
+    });
     Route::middleware('auth:admin')->group(function () {
         // Dashboard admin
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         // Produk (CRUD)
-     
+
 
         // Pesanan
-      
+
         Route::get('/laporan/transaksi', [DashboardController::class, 'report'])
             ->name('laporan.transaksi');
+        //notifikasi
+
+
         // Logout admin
         Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
     });
@@ -119,7 +123,53 @@ Route::middleware('auth:web')->group(function () {
     // Route::post('/services/order/upload', [ServiceOrderController::class, 'uploadPayment'])
     // ->name('shop.services.order.upload');
     Route::get('/services/order/upload/{id}', [ServiceOrderController::class, 'uploadPage'])
-    ->name('shop.services.order.upload');
+        ->name('shop.services.order.upload');
     Route::post('/services/order/upload/{id}', [ServiceOrderController::class, 'uploadPayment'])
-    ->name('shop.services.order.send');
+        ->name('shop.services.order.send');
 });
+
+Route::get('/admin/check-new-orders', function () {
+    $orders = \App\Models\Order::with([
+        'user:id,name',
+        'items.product:id,nama_produk'
+    ])
+        ->where('status', 'pending')
+        ->latest()
+        ->get();
+
+    return response()->json([
+        "count" => $orders->count(),
+        "orders" => $orders
+    ]);
+});
+Route::post('/admin/orders/mark-read/{order}', function (Order $order) {
+    $order->update([
+        'is_read' => 1
+    ]);
+
+    return response()->json(['success' => true]);
+});
+
+
+// Ambil daftar service order baru
+Route::get('/admin/check-new-service-orders', function () {
+    $orders = \App\Models\ServiceOrder::with('item')
+        ->where('order_status', 'pending')
+        ->latest()
+        ->get();
+
+    return response()->json([
+        "count" => $orders->count(),
+        "orders" => $orders
+    ]);
+});
+
+// Tandai sudah dibaca
+// Route::post('/admin/service-orders/mark-read/{order}', function ($orderId) {
+//     $order = \App\Models\ServiceOrder::findOrFail($orderId);
+//     $order->is_read = 1;
+//     $order->save();
+
+//     return response()->json(['message' => 'OK']);
+// })->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+
