@@ -1,9 +1,22 @@
+
 @extends('layouts.app')
-
 @section('title', 'Katalog Produk Kayu')
-
 @section('content')
-<div class="container py-5">
+
+<div class="d-flex">
+
+    <!-- =======================
+         SIDEBAR
+    ======================= -->
+  @include('shop.sidebar')
+
+    <!-- ===========================
+         KONTEN YANG SUDAH ADA
+         (TIDAK DIUBAH)
+    ============================ -->
+    <div class="flex-grow-1">
+
+       <div class="container py-5">
     <h2 class="mb-4 fw-bold text-primary text-center">Katalog Produk Kayu</h2>
 
     <!-- Form Pencarian & Filter -->
@@ -185,4 +198,15 @@
         color: white;
     }
 </style>
+
+    </div>
+
+</div>
+
 @endsection
+
+
+
+
+
+

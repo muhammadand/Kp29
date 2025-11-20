@@ -47,6 +47,7 @@ class ShopController extends Controller
     {
         // Ambil semua kategori untuk dropdown
         $categories = ServiceCategory::with('items')->get();
+        // dd($categories);
 
         // Ambil items untuk ditampilkan berdasarkan filter
         $itemsQuery = \App\Models\ServiceItem::with('category');
