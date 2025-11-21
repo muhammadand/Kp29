@@ -81,15 +81,15 @@
                                            value="{{ $variant->stok }}" min="0" required>
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="form-label">Harga Satuan (Rp)</label>
+                                    <label class="form-label">Harga</label>
                                     <input type="number" name="variants[{{ $index }}][harga]" class="form-control"
                                            value="{{ $variant->harga }}" min="0" required>
                                 </div>
-                                <div class="col-md-2">
+                                {{-- <div class="col-md-2">
                                     <label class="form-label">Harga/m³ (Rp)</label>
                                     <input type="number" name="variants[{{ $index }}][harga_m3]" class="form-control"
                                            value="{{ $variant->harga_m3 ?? 0 }}" min="0" required>
-                                </div>
+                                </div> --}}
                                 <div class="col-md-3 d-flex align-items-end justify-content-end">
                                     <button type="button" class="btn btn-danger btn-sm remove-variant">Hapus</button>
                                 </div>
@@ -144,10 +144,7 @@
                         <label class="form-label">Harga Satuan (Rp)</label>
                         <input type="number" name="variants[${variantIndex}][harga]" class="form-control" min="0" required>
                     </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Harga/m³ (Rp)</label>
-                        <input type="number" name="variants[${variantIndex}][harga_m3]" class="form-control" min="0" required>
-                    </div>
+                   
                     <div class="col-md-3 d-flex align-items-end justify-content-end">
                         <button type="button" class="btn btn-danger btn-sm remove-variant">Hapus</button>
                     </div>

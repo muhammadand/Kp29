@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="container py-5">
-        
+
         {{-- Product Detail Section --}}
         <div class="row g-4 mb-5">
 
@@ -13,15 +13,11 @@
                 <div class="position-sticky" style="top: 20px;">
                     <div class="rounded-3 overflow-hidden" style="box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
                         @if ($product->gambar)
-                            <img src="{{ asset('uploads/products/' . $product->gambar) }}" 
-                                 class="img-fluid w-100" 
-                                 alt="{{ $product->nama_produk }}"
-                                 style="object-fit: cover; max-height: 500px;">
+                            <img src="{{ asset('uploads/products/' . $product->gambar) }}" class="img-fluid w-100"
+                                alt="{{ $product->nama_produk }}" style="object-fit: cover; max-height: 500px;">
                         @else
-                            <img src="https://via.placeholder.com/500x500?text=No+Image" 
-                                 class="img-fluid w-100" 
-                                 alt="No Image"
-                                 style="object-fit: cover; max-height: 500px;">
+                            <img src="https://via.placeholder.com/500x500?text=No+Image" class="img-fluid w-100"
+                                alt="No Image" style="object-fit: cover; max-height: 500px;">
                         @endif
                     </div>
                 </div>
@@ -32,7 +28,8 @@
 
                 {{-- Breadcrumb / Kategori --}}
                 <div class="mb-2">
-                    <span class="badge bg-light text-dark border px-3 py-2" style="font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">
+                    <span class="badge bg-light text-dark border px-3 py-2"
+                        style="font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">
                         {{ $product->jenis_kayu }}
                     </span>
                 </div>
@@ -98,8 +95,8 @@
                                     <tr>
                                         <th class="fw-semibold" style="padding: 12px;">Ukuran</th>
                                         <th class="fw-semibold text-center" style="padding: 12px;">Stok</th>
-                                        <th class="fw-semibold text-end" style="padding: 12px;">Harga Satuan</th>
-                                        <th class="fw-semibold text-end" style="padding: 12px;">Harga/m³</th>
+                                        <th class="fw-semibold text-end" style="padding: 12px;">Harga</th>
+                                        {{-- <th class="fw-semibold text-end" style="padding: 12px;">Harga/m³</th> --}}
                                         <th class="fw-semibold text-center" style="padding: 12px; width: 120px;">Aksi</th>
                                     </tr>
                                 </thead>
@@ -110,32 +107,39 @@
                                                 <span class="fw-semibold">{{ $variant->ukuran }}</span>
                                             </td>
                                             <td class="text-center" style="padding: 14px;">
-                                                @if($variant->stok > 0)
-                                                    <span class="badge bg-success-subtle text-success" style="font-size: 12px; font-weight: 500; padding: 4px 10px;">
+                                                @if ($variant->stok > 0)
+                                                    <span class="badge bg-success-subtle text-success"
+                                                        style="font-size: 12px; font-weight: 500; padding: 4px 10px;">
                                                         {{ $variant->stok }} pcs
                                                     </span>
                                                 @else
-                                                    <span class="badge bg-danger-subtle text-danger" style="font-size: 12px; font-weight: 500; padding: 4px 10px;">
+                                                    <span class="badge bg-danger-subtle text-danger"
+                                                        style="font-size: 12px; font-weight: 500; padding: 4px 10px;">
                                                         Habis
                                                     </span>
                                                 @endif
                                             </td>
                                             <td class="text-end" style="padding: 14px;">
-                                                <span class="fw-semibold">Rp {{ number_format($variant->harga, 0, ',', '.') }}</span>
+                                                <span class="fw-semibold">Rp
+                                                    {{ number_format($variant->harga, 0, ',', '.') }}</span>
                                             </td>
-                                            <td class="text-end" style="padding: 14px;">
+                                            {{-- <td class="text-end" style="padding: 14px;">
                                                 <span class="text-muted">Rp {{ number_format($variant->harga_m3, 0, ',', '.') }}</span>
-                                            </td>
+                                            </td> --}}
                                             <td class="text-center" style="padding: 14px;">
                                                 <form action="{{ route('cart.add', $variant->id) }}" method="POST">
                                                     @csrf
-                                                    <button type="submit" 
-                                                            class="btn btn-success btn-sm rounded-2 d-inline-flex align-items-center justify-content-center"
-                                                            style="padding: 8px 16px; font-size: 13px; font-weight: 500;"
-                                                            {{ $variant->stok <= 0 ? 'disabled' : '' }}>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1" viewBox="0 0 16 16">
-                                                            <path d="M9 5.5a.5.5 0 0 0-1 0V7H6.5a.5.5 0 0 0 0 1H8v1.5a.5.5 0 0 0 1 0V8h1.5a.5.5 0 0 0 0-1H9V5.5z"/>
-                                                            <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                                                    <button type="submit"
+                                                        class="btn btn-success btn-sm rounded-2 d-inline-flex align-items-center justify-content-center"
+                                                        style="padding: 8px 16px; font-size: 13px; font-weight: 500;"
+                                                        {{ $variant->stok <= 0 ? 'disabled' : '' }}>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14"
+                                                            height="14" fill="currentColor" class="me-1"
+                                                            viewBox="0 0 16 16">
+                                                            <path
+                                                                d="M9 5.5a.5.5 0 0 0-1 0V7H6.5a.5.5 0 0 0 0 1H8v1.5a.5.5 0 0 0 1 0V8h1.5a.5.5 0 0 0 0-1H9V5.5z" />
+                                                            <path
+                                                                d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
                                                         </svg>
                                                         Tambah
                                                     </button>
@@ -175,16 +179,16 @@
                     @foreach ($product->reviews as $review)
                         <div class="col-12">
                             <div class="card border-0 rounded-3" style="background-color: #f8f9fa; padding: 20px;">
-                                
+
                                 {{-- Header: Nama & Rating --}}
                                 <div class="d-flex align-items-center justify-content-between mb-2">
                                     <div class="d-flex align-items-center">
                                         {{-- Avatar --}}
                                         <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-3"
-                                             style="width: 40px; height: 40px; font-size: 16px; font-weight: 600;">
+                                            style="width: 40px; height: 40px; font-size: 16px; font-weight: 600;">
                                             {{ strtoupper(substr($review->name, 0, 1)) }}
                                         </div>
-                                        
+
                                         {{-- Nama --}}
                                         <div>
                                             <h6 class="fw-bold mb-0" style="font-size: 15px; color: #212529;">

@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->string('ukuran');
             $table->decimal('harga', 12, 2);
-            $table->decimal('harga_m3', 12, 2);
+            $table->decimal('harga_m3', 12, 2)->nullable();
             $table->integer('stok');
             $table->timestamps();
         });
